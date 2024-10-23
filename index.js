@@ -320,19 +320,6 @@ function viewAll() {
   addinmain(todoList);
 }
 
-function markTaskComplete(taskId) {
-  todoList.forEach((task) => {
-    if (task.id === taskId) {
-      task.complete = true; // Mark task as complete
-    }
-  });
-
-  update(); // Update UI
-  addinmain(todoList); // Refresh tasks list
-  saveToLocalStorage(); // Save updated list to local storage
-}
-
-// Initialize
 document.addEventListener("DOMContentLoaded", () => {
   loadFromLocalStorage();
   initializePushNotifications();
@@ -350,3 +337,15 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("Initial Notification Permission:", Notification.permission);
   console.log("Service Worker Support:", "serviceWorker" in navigator);
 });
+
+function markTaskComplete(taskId) {
+  todoList.forEach((task) => {
+    if (task.id === taskId) {
+      task.complete = true; // Mark the task as complete
+    }
+  });
+
+  update(); // Update the UI
+  addinmain(todoList); // Refresh the task list
+  saveToLocalStorage(); // Save the updated list
+}
