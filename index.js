@@ -48,15 +48,6 @@ todoInput.addEventListener("input", function () {
   }
 });
 
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.addEventListener("message", (event) => {
-    if (event.data && event.data.action === "completeTask") {
-      const taskId = event.data.taskId;
-      markTaskComplete(taskId);
-    }
-  });
-}
-
 // Function to adjust the textarea height
 function adjustHeight() {
   todoInput.style.height = "auto"; // Reset the height to auto to shrink back if needed
@@ -329,16 +320,6 @@ function viewAll() {
   addinmain(todoList);
 }
 
-// Initialize
-document.addEventListener("DOMContentLoaded", () => {
-  loadFromLocalStorage();
-  initializePushNotifications();
-
-  // Log initial status
-  console.log("Initial Notification Permission:", Notification.permission);
-  console.log("Service Worker Support:", "serviceWorker" in navigator);
-});
-
 function markTaskComplete(taskId) {
   todoList.forEach((task) => {
     if (task.id === taskId) {
@@ -350,3 +331,22 @@ function markTaskComplete(taskId) {
   addinmain(todoList); // Refresh tasks list
   saveToLocalStorage(); // Save updated list to local storage
 }
+
+// Initialize
+document.addEventListener("DOMContentLoaded", () => {
+  loadFromLocalStorage();
+  initializePushNotifications();
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.addEventListener("message", (event) => {
+      if (event.data && event.data.action === "completeTask") {
+        const taskId = event.data.taskId;
+        markTaskComplete(taskId);
+      }
+    });
+  }
+
+  // Log initial status
+  console.log("Initial Notification Permission:", Notification.permission);
+  console.log("Service Worker Support:", "serviceWorker" in navigator);
+});
