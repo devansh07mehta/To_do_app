@@ -20,6 +20,10 @@ app.use(bodyParser.json());
 
 let subscriptions = []; // Store user subscriptions
 
+app.get("/", (req, res) => {
+  res.send("Hello, world!");
+});
+
 // Route to handle subscriptions from the frontend
 app.post("/subscribe", (req, res) => {
   const subscription = req.body;
