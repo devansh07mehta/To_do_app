@@ -164,8 +164,8 @@ async function notifyUser(task) {
     }
 
     // Play alarm sound
-    var audio = new Audio("alarm.mp3");
-    await audio.play();
+    // var audio = new Audio("alarm.mp3");
+    // await audio.play();
 
     // Mark as notified
     notifiedTasks.add(task.id);
@@ -328,7 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
     navigator.serviceWorker.addEventListener("message", (event) => {
       if (event.data && event.data.action === "completeTask") {
         const taskId = event.data.taskId;
-        markTaskComplete(taskId);
+        markTaskComplete(taskId); // Call the function to complete the task
       }
     });
   }

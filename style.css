@@ -13,7 +13,7 @@
     display: none;
 }
 
-@keyframes zoomInOut {
+/* @keyframes zoomInOut {
     0% {
         background-size: 100%;
     }
@@ -25,7 +25,7 @@
     100% {
         background-size: 100%;
     }
-}
+} */
 
 body {
     position: relative;
@@ -40,7 +40,7 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    animation: zoomInOut 5s ease-in-out infinite;
+    /* animation: zoomInOut 5s ease-in-out infinite; */
     overflow: hidden;
 }
 
@@ -341,12 +341,12 @@ dropdown*/
 @media screen and (max-width: 428px) {
     body {
         background-size: cover;
-        animation: zoomInOut 15s ease-in-out infinite;
+        /* animation: zoomInOut 15s ease-in-out infinite; */
         /* Simpler animation for mobile */
     }
 
     /* Adjust animation for better mobile performance */
-    @keyframes zoomInOut {
+    /* @keyframes zoomInOut {
         0% {
             background-size: 110%;
         }
@@ -358,7 +358,7 @@ dropdown*/
         100% {
             background-size: 110%;
         }
-    }
+    } */
 }
 
 /* For phones (landscape) */
@@ -512,7 +512,7 @@ body {
 }
 
 /* Animation keyframes */
-@keyframes zoomInOut {
+/* @keyframes zoomInOut {
     0% {
         transform: scale(1);
     }
@@ -524,7 +524,7 @@ body {
     100% {
         transform: scale(1);
     }
-}
+} */
 
 /* Apply animation using transform instead of background-size for better performance */
 body {
