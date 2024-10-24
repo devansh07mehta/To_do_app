@@ -64,7 +64,7 @@ async function initializePushNotifications() {
       swRegistration = await navigator.serviceWorker.register(
         "service-worker.js",
         {
-          scope: "/",
+          scope: "/frontend/",
           updateViaCache: "none",
         }
       );
@@ -164,7 +164,7 @@ async function notifyUser(task) {
     }
 
     // Play alarm sound
-    // var audio = new Audio("alarm.mp3");
+    // var audio = new Audio("./resources/audio/alarm.mp3");
     // await audio.play();
 
     // Mark as notified
@@ -173,8 +173,8 @@ async function notifyUser(task) {
     if (Notification.permission === "granted" && swRegistration) {
       const options = {
         body: `Task "${task.task}" is due!`,
-        icon: "notification-icon.png",
-        badge: "notification-badge.png",
+        icon: "./resources/images/notification-icon.png",
+        badge: "./resources/images/notification-badge.png",
         vibrate: [100, 50, 100],
         data: {
           task: task,
@@ -348,4 +348,79 @@ function markTaskComplete(taskId) {
   update(); // Update the UI
   addinmain(todoList); // Refresh the task list
   saveToLocalStorage(); // Save the updated list
+}
+
+async function initializePushNotifications() {
+  try {
+    // Fetch the VAPID public key from the backend
+    const response = await fetch("http://localhost:5000/api/public-key");
+    const data = await response.json();
+    const vapidPublicKey = data.publicKey;
+
+    if ("serviceWorker" in navigator && "PushManager" in window) {
+      console.log("Registering service worker...");
+
+      swRegistration = await navigator.serviceWorker.register(
+        "service-worker.js",
+        {
+          scope: "/frontend/",
+          updateViaCache: "none",
+        }
+      );
+
+      console.log("Service Worker registered:", swRegistration);
+
+      if (Notification.permission === "granted") {
+        console.log("Notification permission already granted");
+      } else {
+        const permission = await Notification.requestPermission();
+        console.log("Notification permission status:", permission);
+      }
+
+      if (Notification.permission === "granted") {
+        // Convert the VAPID public key to a Uint8Array (required by PushManager)
+        const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
+
+        // Subscribe the user to push notifications
+        const subscription = await swRegistration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: applicationServerKey,
+        });
+
+        console.log("User subscribed to push notifications:", subscription);
+
+        // Send the subscription to the backend
+        await fetch("http://localhost:5000/subscribe", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(subscription),
+        });
+
+        console.log("Subscription sent to the server");
+      }
+
+      console.log("Push notification setup complete");
+    } else {
+      console.warn("Push messaging is not supported");
+    }
+  } catch (error) {
+    console.error("Error setting up push notifications:", error);
+  }
+}
+
+// Helper function to convert the base64 VAPID key to Uint8Array
+function urlBase64ToUint8Array(base64String) {
+  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+
+  return outputArray;
 }
