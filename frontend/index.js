@@ -353,7 +353,9 @@ function markTaskComplete(taskId) {
 async function initializePushNotifications() {
   try {
     // Fetch the VAPID public key from the backend
-    const response = await fetch("http://localhost:5000/api/public-key");
+    const response = await fetch(
+      "https://todobackend-chi.vercel.app/api/public-key"
+    );
     const data = await response.json();
     const vapidPublicKey = data.publicKey;
 
